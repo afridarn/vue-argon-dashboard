@@ -96,10 +96,10 @@
               </div>
             </div>
             <div class="card-body">
-              <form role="form">
-                <argon-input type="text" placeholder="Name" aria-label="Name" />
-                <argon-input type="email" placeholder="Email" aria-label="Email" />
-                <argon-input type="password" placeholder="Password" aria-label="Password" />
+              <form @submit.prevent="submitRegister">
+                <argon-input type="text" v-model="input.name" placeholder="Name" name="name" aria-label="Name" />
+                <argon-input type="text" v-model="input.username" placeholder="Username" name="username" aria-label="Username" />
+                <argon-input type="password" v-model="input.password" placeholder="Password" name="password" aria-label="Password" />
                 <argon-checkbox checked>
                   <label class="form-check-label" for="flexCheckDefault">
                     I agree the
@@ -130,6 +130,8 @@
 </template>
 
 <script>
+import { mapActions } from "pinia";
+import d$auth from '@/stores/auth';
 import Navbar from "@/examples/PageLayout/Navbar.vue";
 import AppFooter from "@/examples/PageLayout/Footer.vue";
 import ArgonInput from "@/components/ArgonInput.vue";
@@ -152,6 +154,25 @@ export default {
     this.$store.state.showSidenav = false;
     this.$store.state.showFooter = false;
     body.classList.remove("bg-gray-100");
+  },
+  data: () => ({
+    // Input
+    input:{
+      name: '',
+      username: '',
+      password: '',
+    },
+  }),
+  methods: {
+    ...mapActions(d$auth, ['a$register']),
+    async submitRegister(){
+      try{
+        await this.a$register({...this.input});
+        this.$router.replace({name: 'Signin'});
+      } catch (error) {
+        console.log(error);
+      }
+    }
   },
   beforeUnmount() {
     this.$store.state.hideConfigButton = false;

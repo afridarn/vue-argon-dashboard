@@ -26,13 +26,18 @@
       class="mb-3 btn btn-dark btn-sm w-100"
       >توثيق</a
     >
-    <a
+    <!-- <a
       v-else
       href="https://www.creative-tim.com/learning-lab/vue/overview/argon-dashboard/"
       target="_blank"
       class="mb-3 btn btn-dark btn-sm w-100"
-      >Documentation</a
-    >
+      >Sign Out</a
+    > -->
+    <RouterLink :to="{name: 'Signout'}">
+      <button type="button" class="mb-3 btn btn-dark btn-sm w-100" @click.prevent="logoutHandler">
+        Sign Out
+      </button>
+    </RouterLink>
     <a
       v-if="this.$store.state.isRTL"
       href="https://www.creative-tim.com/product/vue-argon-dashboard-pro"
@@ -51,6 +56,8 @@
   </div>
 </template>
 <script>
+import { mapActions } from "pinia";
+import d$auth from '@/stores/auth';
 import img from "../../assets/img/illustrations/icon-documentation.svg";
 
 export default {
@@ -60,6 +67,14 @@ export default {
     return {
       img
     };
+  },
+  methods: {
+    ...mapActions(d$auth, ["a$logout"]),
+    async logoutHandler() {
+      console.log("logoutHandler");
+      await this.a$logout();
+      this.$router.push({ name: "Signin" });
+    }
   }
 };
 </script>
